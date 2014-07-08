@@ -1,8 +1,6 @@
 # Installation
 
-`lein uberjar && lein install` and
-`[vaulted-clj/vaulted-clj "0.1.2-SNAPSHOT"]` in your `project.clj`
-file.
+[![Clojars Project](http://clojars.org/vaulted/vaulted-clj/latest-version.svg)](http://clojars.org/vaulted/vaulted-clj)
 
 # Usage
 
