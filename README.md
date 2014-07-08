@@ -17,6 +17,6 @@ optional. Informative error message should appear as exceptions if you
 don't give the API the right data.
 
 Further documentation can be found at:
-[https://vaulted.com/merchant/api](https://vaulted.com/merchant/api).
+[https://www.vaulted.com/seller/api](https://www.vaulted.com/seller/api).
 
 Bug reports and feature requests to @oskarth.
