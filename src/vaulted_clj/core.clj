@@ -221,7 +221,7 @@
 ;;;;; Debit
 
 (sm/defn post-debit :- Debit
-  "Takes a customer id and posts a debit with a debit map."
+  "Takes a customer id and posts a debit with a debit map, returns a debit."
   [id :- s/Str debit :- Debit & [mode :- s/Keyword]]
   (post-resource (gen-debits-url id mode) debit))
 
@@ -238,18 +238,18 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;; Refund - assumes debit has succeeded.
 
-(sm/defn post-refund :- Debit
-  "Takes a customer id and posts a debit with a debit map."
+(sm/defn post-refund :- Refund
+  "Takes a customer id and posts a refund, returns a refund map."
   [id :- s/Str refund :- Refund & [mode :- s/Keyword]]
   (post-resource (gen-refunds-url id mode) refund))
 
-(sm/defn get-refund :- Debit
-  "Takes a customer and debit id and returns a debit map."
+(sm/defn get-refund :- Refund
+  "Takes a customer and debit id and returns a refund map."
   [cid :- s/Str did :- s/Str & [mode :- s/Keyword]]
   (get-resource (gen-refund-url cid did mode)))
 
-(sm/defn get-refund-by-ref :- Debit
-  "Takes a customer id and a reference, returns a debit map."
+(sm/defn get-refund-by-ref :- Refund
+  "Takes a customer id and a reference, returns a refund map."
   [cid :- s/Str ref :- s/Str & [mode :- s/Keyword]]
   (get-resource (gen-refund-ref-url cid ref mode)))
 
@@ -263,12 +263,12 @@
   [id :- s/Str credit :- Refund & [mode :- s/Keyword]]
   (post-resource (gen-credits-url id mode) credit))
 
-(sm/defn get-refund :- Debit
+(sm/defn get-credit :- Debit
   "Takes a customer and debit id and returns a debit map."
   [cid :- s/Str did :- s/Str & [mode :- s/Keyword]]
   (get-resource (gen-credit-url cid did mode)))
 
-(sm/defn get-refund-by-ref :- Debit
+(sm/defn get-credit-by-ref :- Debit
   "Takes a customer id and a reference, returns a debit map."
   [cid :- s/Str ref :- s/Str & [mode :- s/Keyword]]
   (get-resource (gen-credit-ref-url cid ref mode)))
