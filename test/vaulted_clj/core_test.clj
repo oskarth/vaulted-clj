@@ -16,8 +16,10 @@
             :description "Flicknex Streaming."
             :period {:start "1396232247" :end "1398824247"}
             :quantity 1}]
-   :description ""}]
+   :description ""})
 
+(defn gen-customer []
+  (post-resource (gen-customers-url :test) {:email "test@example.com"}))
 
 (deftest test-internals
   (testing "gen-base-url"
@@ -44,16 +46,44 @@
            (post-resource (gen-customers-url :test)
                           {:email "test@example.com"}))))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; PUBLIC API TESTS
+
+;; Mocking
+(def cid (:id (post-customer {:email "devnull@vaulted.com"} :test)))
+(def did (:id (post-debit cid (gen-debit-map) :test)))
+
+(deftest test-customer
+  (testing "post customer"
+    (is (map? (post-customer {:email "devnull@vaulted.com"} :test))))
+  
+  (testing "get customer"
+    (is (== (:_type (get-customer cid :test) "customer"))))
+
+  ;; get-requirements
+  ;; put-customer
+  ;; get-customer-by-email
+)
+
+(deftest test-debit
+  (testing "post debit"
+    (is (map? (post-debit cid (gen-debit-map) :test))))
+
+  (testing "get debit"
+    (is (== (:_type (get-debit cid did :test) "debit"))))
+)
+
+
+
+;; Old tests
+
 (deftest test-post-resource
-  (let [customer (post-resource (gen-customers-url :test)
-                                {:email "test@example.com"})
+  (let [customer (gen-customer)
         debit (gen-debit-map)]
     (testing "post-resource"
-      (is (map? (post-resource (gen-customers-url :test)
-                               {:email "test@example.com"}))))
-
-    (testing "post-resource with post-debit")
-    (is (post-resource (gen-debits-url (:id customer)) debit))))
+      (is (map? (gen-customer))))
+    (testing "post-resource with post-debit"
+      (is (post-resource (gen-debits-url (:id customer)) debit)))))
 
 (deftest test-put
   (let [existing-id (:id (post-resource (gen-customers-url :test)
@@ -76,6 +106,9 @@
     (testing "get-requirements"
       (is (not (nil? (get-requirements id)))))
     (testing "parse-requirements")))
+
+
+;; Schema tests
 
 (deftest test-schemas
   (testing "Customer works"

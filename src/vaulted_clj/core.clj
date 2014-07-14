@@ -146,7 +146,7 @@
     (handle-response client/put url options)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; Public
+;;; Public API
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;; Customer
@@ -189,7 +189,7 @@
 (sm/defn get-debit :- Debit
   "Takes a customer and debit id and returns a debit map."
   [cid :- s/Str did :- s/Str & [mode :- s/Keyword]]
-  (get-resource (gen-debits-url cid did mode)))
+  (get-resource (gen-debit-url cid did mode)))
 
 ;; TODO get debit
 ;; TODO get debit by ref
