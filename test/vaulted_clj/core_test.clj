@@ -52,6 +52,10 @@
 ;; Mocking
 (def cid (:id (post-customer {:email "devnull@vaulted.com"} :test)))
 (def did (:id (post-debit cid (gen-debit-map) :test)))
+(def rid (:reference (post-debit cid (gen-debit-map) :test))) ;; duplication
+(def refund (:uri (post-debit cid (gen-debit-map) :test))) ;; duplication
+(def refund-map {:debit_uri refund :amount 1900 :number "1000"})
+(def credit-map {:amount 1900 :number "1000"})
 
 (deftest test-customer
   (testing "post customer"
@@ -60,6 +64,8 @@
   (testing "get customer"
     (is (== (:_type (get-customer cid :test) "customer"))))
 
+  (testing "get requirements"
+    (is (not (nil? (get-requirements cid)))))
   ;; get-requirements
   ;; put-customer
   ;; get-customer-by-email
@@ -71,7 +77,34 @@
 
   (testing "get debit"
     (is (== (:_type (get-debit cid did :test) "debit"))))
+
+  (testing "get debit by ref"
+    (is (== (:_type (get-debit-by-ref cid rid :test) "debit"))))
 )
+
+(deftest test-refund
+  (testing "post refund exception"
+    (is (thrown-with-msg?
+         Exception #"cannot refund until debit has succeeded"
+         (post-refund cid refund-map :test))))
+
+   ;; get-refund
+   ;; get-refund-by-ref
+)
+
+(deftest test-credit
+  (testing "post credit"
+    (is (thrown-with-msg?
+         Exception #"no such account*"
+         (post-credit cid credit-map :test))))
+
+  ;; get-credit
+  ;; get-credit-by-ref
+)
+
+
+
+
 
 
 

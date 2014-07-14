@@ -65,6 +65,12 @@
    (s/optional-key :description) s/Str
    (s/optional-key :instrument) s/Str}) ;; "invoice", "direct_debit", or "sofort"
 
+(def Refund
+  "A schema for a Refund."
+  {:number s/Str
+   :amount s/Num
+   :debit_uri s/Str}) ;; URI from Debit map
+
 (def Email
   "Schema for email"
   (s/pred #(re-matches util/+email-regex+ %)))
@@ -82,11 +88,21 @@
         (= mode :live) "https://api.vaulted.com/v0"
         :else "https://test.vaulted.com/v0"))
 
+;; Customers
+
 (defn gen-customers-url [& [mode]]
   (str (gen-base-url mode) "/customers"))
 
 (defn gen-customer-url [id & [mode]]
   (str (gen-customers-url mode) "/" id))
+
+(defn gen-requirements-url [id & [mode]]
+  (str (gen-customers-url mode) "/" id "/requirements"))
+
+(defn gen-customer-email-url [email & [mode]]
+  (str (gen-customers-url mode) "?email=" email))
+
+;; Debits
 
 (defn gen-debits-url [id & [mode]]
   (str (gen-customers-url mode) "/" id "/debits"))
@@ -94,11 +110,34 @@
 (defn gen-debit-url [cid did & [mode]]
   (str (gen-debits-url cid mode) "/" did))
 
-(defn gen-requirements-url [id & [mode]]
-  (str (gen-customers-url mode) "/" id "/requirements"))
+(defn gen-debit-ref-url [cid ref & [mode]]
+  (str (gen-debits-url cid mode) "?ref=" ref))
 
-(defn gen-customer-email-url [email & [mode]]
-  (str (gen-customers-url mode) "?email=" email))
+;; Refunds
+
+(defn gen-refunds-url [id & [mode]]
+  (str (gen-customers-url mode) "/" id "/refunds"))
+
+(defn gen-refund-url [cid did & [mode]]
+  (str (gen-refunds-url cid mode) "/" did))
+
+(defn gen-refund-ref-url [cid ref & [mode]]
+  (str (gen-refunds-url cid mode) "?ref=" ref))
+
+;; Credits
+
+(defn gen-credits-url [id & [mode]]
+  (str (gen-customers-url mode) "/" id "/credits"))
+
+(defn gen-credit-url [cid did & [mode]]
+  (str (gen-credits-url cid mode) "/" did))
+
+(defn gen-credit-ref-url [cid ref & [mode]]
+  (str (gen-credits-url cid mode) "?ref=" ref))
+
+
+;; TODO
+
 
 (defn make-options-map
   "Default request options map. A function because *vaulted-key* might change."
@@ -151,7 +190,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;; Customer
 
-(sm/defn get-customer :- s/Str
+(sm/defn get-customer :- Customer
   "GET a customer with their id. Returns a customer map."
   [id :- Customer & [mode :- s/Keyword]]
   (get-resource (gen-customer-url id mode)))
@@ -191,22 +230,48 @@
   [cid :- s/Str did :- s/Str & [mode :- s/Keyword]]
   (get-resource (gen-debit-url cid did mode)))
 
-;; TODO get debit
-;; TODO get debit by ref
+(sm/defn get-debit-by-ref :- Debit
+  "Takes a customer id and a reference, returns a debit map."
+  [cid :- s/Str ref :- s/Str & [mode :- s/Keyword]]
+  (get-resource (gen-debit-ref-url cid ref mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;; Refund
+;;;;; Refund - assumes debit has succeeded.
 
-;; TODO post refund
-;; TODO get refund
-;; TODO get refund by ref
+(sm/defn post-refund :- Debit
+  "Takes a customer id and posts a debit with a debit map."
+  [id :- s/Str refund :- Refund & [mode :- s/Keyword]]
+  (post-resource (gen-refunds-url id mode) refund))
+
+(sm/defn get-refund :- Debit
+  "Takes a customer and debit id and returns a debit map."
+  [cid :- s/Str did :- s/Str & [mode :- s/Keyword]]
+  (get-resource (gen-refund-url cid did mode)))
+
+(sm/defn get-refund-by-ref :- Debit
+  "Takes a customer id and a reference, returns a debit map."
+  [cid :- s/Str ref :- s/Str & [mode :- s/Keyword]]
+  (get-resource (gen-refund-ref-url cid ref mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;; Credit
 
-;; TODO post credit
-;; TODO get credit
-;; TODO get credit by ref
+;; Return value Credit?
+
+(sm/defn post-credit :- Debit
+  "Takes a customer id and posts a debit with a debit map."
+  [id :- s/Str credit :- Refund & [mode :- s/Keyword]]
+  (post-resource (gen-credits-url id mode) credit))
+
+(sm/defn get-refund :- Debit
+  "Takes a customer and debit id and returns a debit map."
+  [cid :- s/Str did :- s/Str & [mode :- s/Keyword]]
+  (get-resource (gen-credit-url cid did mode)))
+
+(sm/defn get-refund-by-ref :- Debit
+  "Takes a customer id and a reference, returns a debit map."
+  [cid :- s/Str ref :- s/Str & [mode :- s/Keyword]]
+  (get-resource (gen-credit-ref-url cid ref mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Macros
