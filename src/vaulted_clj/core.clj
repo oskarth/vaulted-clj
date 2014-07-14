@@ -71,6 +71,11 @@
    :amount s/Num
    :debit_uri s/Str}) ;; URI from Debit map
 
+(def Credit
+  "A schema for a Credit."
+  {:number s/Str
+   :amount s/Num})
+
 (def Email
   "Schema for email"
   (s/pred #(re-matches util/+email-regex+ %)))
@@ -258,18 +263,18 @@
 
 ;; Return value Credit?
 
-(sm/defn post-credit :- Debit
-  "Takes a customer id and posts a debit with a debit map."
-  [id :- s/Str credit :- Debit & [mode :- s/Keyword]]
+(sm/defn post-credit :- Credit
+  "Takes a customer id and posts a credit with a credit map, returns a credit."
+  [id :- s/Str credit :- Credit & [mode :- s/Keyword]]
   (post-resource (gen-credits-url id mode) credit))
 
-(sm/defn get-credit :- Debit
-  "Takes a customer and debit id and returns a debit map."
+(sm/defn get-credit :- Credit
+  "Takes a customer and debit id and returns a credit map."
   [cid :- s/Str did :- s/Str & [mode :- s/Keyword]]
   (get-resource (gen-credit-url cid did mode)))
 
-(sm/defn get-credit-by-ref :- Debit
-  "Takes a customer id and a reference, returns a debit map."
+(sm/defn get-credit-by-ref :- Credit
+  "Takes a customer id and a reference, returns a credit map."
   [cid :- s/Str ref :- s/Str & [mode :- s/Keyword]]
   (get-resource (gen-credit-ref-url cid ref mode)))
 
