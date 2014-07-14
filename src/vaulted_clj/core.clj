@@ -88,8 +88,11 @@
 (defn gen-customer-url [id & [mode]]
   (str (gen-customers-url mode) "/" id))
 
-(defn gen-debit-url [id & [mode]]
+(defn gen-debits-url [id & [mode]]
   (str (gen-customers-url mode) "/" id "/debits"))
+
+(defn gen-debit-url [cid did & [mode]]
+  (str (gen-debits-url cid mode) "/" did))
 
 (defn gen-requirements-url [id & [mode]]
   (str (gen-customers-url mode) "/" id "/requirements"))
@@ -181,7 +184,12 @@
 (sm/defn post-debit :- Debit
   "Takes a customer id and posts a debit with a debit map."
   [id :- s/Str debit :- Debit & [mode :- s/Keyword]]
-  (post-resource (gen-debit-url id mode) debit))
+  (post-resource (gen-debits-url id mode) debit))
+
+(sm/defn get-debit :- Debit
+  "Takes a customer and debit id and returns a debit map."
+  [cid :- s/Str did :- s/Str & [mode :- s/Keyword]]
+  (get-resource (gen-debits-url cid did mode)))
 
 ;; TODO get debit
 ;; TODO get debit by ref

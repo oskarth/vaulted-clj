@@ -53,7 +53,7 @@
                                {:email "test@example.com"}))))
 
     (testing "post-resource with post-debit")
-    (is (post-resource (gen-debit-url (:id customer)) debit))))
+    (is (post-resource (gen-debits-url (:id customer)) debit))))
 
 (deftest test-put
   (let [existing-id (:id (post-resource (gen-customers-url :test)
