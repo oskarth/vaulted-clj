@@ -192,7 +192,7 @@
 
 (sm/defn get-customer :- Customer
   "GET a customer with their id. Returns a customer map."
-  [id :- Customer & [mode :- s/Keyword]]
+  [id :- s/Str & [mode :- s/Keyword]]
   (get-resource (gen-customer-url id mode)))
 
 (sm/defn post-customer :- Customer
