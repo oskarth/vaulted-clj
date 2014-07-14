@@ -260,7 +260,7 @@
 
 (sm/defn post-credit :- Debit
   "Takes a customer id and posts a debit with a debit map."
-  [id :- s/Str credit :- Refund & [mode :- s/Keyword]]
+  [id :- s/Str credit :- Debit & [mode :- s/Keyword]]
   (post-resource (gen-credits-url id mode) credit))
 
 (sm/defn get-credit :- Debit
