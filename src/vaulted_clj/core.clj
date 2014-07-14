@@ -145,6 +145,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Public
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;; Customer
+
 (sm/defn get-customer :- s/Str
   "GET a customer with their id. Returns a customer map."
   [id :- Customer & [mode :- s/Keyword]]
@@ -161,11 +164,6 @@
   [id :- s/Str & [mode :- s/Keyword]]
   (:fields (get-resource (gen-requirements-url id mode))))
 
-(sm/defn post-debit :- Debit
-  "Takes a customer id and posts a debit with a debit map."
-  [id :- s/Str debit :- Debit & [mode :- s/Keyword]]
-  (post-resource (gen-debit-url id mode) debit))
-
 (sm/defn put-customer :- Customer
   "Updates a customer."
   [id :- s/Str customer :- Customer & [mode :- s/Keyword]]
@@ -176,6 +174,31 @@
   "Get a customer by email."
   [email :- Email & [mode :- s/Keyword]]
   (get-resource (gen-customer-email-url email mode)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;; Debit
+
+(sm/defn post-debit :- Debit
+  "Takes a customer id and posts a debit with a debit map."
+  [id :- s/Str debit :- Debit & [mode :- s/Keyword]]
+  (post-resource (gen-debit-url id mode) debit))
+
+;; TODO get debit
+;; TODO get debit by ref
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;; Refund
+
+;; TODO post refund
+;; TODO get refund
+;; TODO get refund by ref
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;; Credit
+
+;; TODO post credit
+;; TODO get credit
+;; TODO get credit by ref
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Macros
