@@ -261,8 +261,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;; Credit
 
-;; Return value Credit?
-
 (sm/defn post-credit :- Credit
   "Takes a customer id and posts a credit with a credit map, returns a credit."
   [id :- s/Str credit :- Credit & [mode :- s/Keyword]]
