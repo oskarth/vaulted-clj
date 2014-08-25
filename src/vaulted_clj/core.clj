@@ -63,17 +63,20 @@
   {:number s/Str ;; document number
    :items [Item]
    (s/optional-key :description) s/Str
+   (s/optional-key :language) s/Str
    (s/optional-key :instrument) s/Str}) ;; "invoice", "direct_debit", or "sofort"
 
 (def Refund
   "A schema for a Refund."
   {:number s/Str
    :amount s/Num
+   (s/optional-key :language) s/Str
    :debit_uri s/Str}) ;; URI from Debit map
 
 (def Credit
   "A schema for a Credit."
   {:number s/Str
+   (s/optional-key :language) s/Str
    :amount s/Num})
 
 (def Email
