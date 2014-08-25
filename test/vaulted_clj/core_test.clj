@@ -102,45 +102,6 @@
   ;; get-credit-by-ref
 )
 
-
-
-
-
-
-
-;; Old tests
-
-(deftest test-post-resource
-  (let [customer (gen-customer)
-        debit (gen-debit-map)]
-    (testing "post-resource"
-      (is (map? (gen-customer))))
-    (testing "post-resource with post-debit"
-      (is (post-resource (gen-debits-url (:id customer)) debit)))))
-
-(deftest test-put
-  (let [existing-id (:id (post-resource (gen-customers-url :test)
-                                        {:email "existing@example.com"}))]
-    (testing "put-resource"
-      (is (map? (put-resource (gen-customer-url existing-id)
-                              {:name "Foo"
-                               :address {:line1 "Foo"
-                                         :city "Bar"}}))))))
-
-(deftest test-get
-  (let [customer-id (:id (post-resource (gen-customers-url :test)
-                                        {:email "test@example.com"}))]
-    (testing "get-resource"
-      (is (map? (get-resource (gen-customer-url customer-id)))))))
-
-(deftest test-requirements
-  (let [id (:id (post-resource (gen-customers-url :test)
-                               {:email "test@example.com"}))]
-    (testing "get-requirements"
-      (is (not (nil? (get-requirements id)))))
-    (testing "parse-requirements")))
-
-
 ;; Schema tests
 
 (deftest test-schemas
