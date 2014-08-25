@@ -12,7 +12,7 @@ dist:
 	$(LEIN) uberjar
 
 publish:
-	# clojars something
+	$(LEIN) push
 
 clean:
 	$(LEIN) clean
