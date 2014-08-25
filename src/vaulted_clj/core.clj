@@ -280,6 +280,16 @@
   (get-resource (gen-credit-ref-url cid ref mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; UI routes
+
+;; TODO: Still in flux with MerchantStatement etc
+;; (sm/defn get-merchant-statement :- MerchantStatement
+;;   "Takes a user id and returns a merchant statement."
+;;   [userid :- s/Str & [mode :- s/Keyword]]
+;;   (get-resource
+;;     (str "https://test.vaulted.com/v0/ui/merchant-statements?user=" (:user params))))]
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Macros
 
 (defmacro with-token
