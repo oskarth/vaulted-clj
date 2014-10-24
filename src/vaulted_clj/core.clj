@@ -83,6 +83,25 @@
   "Schema for email"
   (s/pred #(re-matches util/+email-regex+ %)))
 
+;; Experimental
+
+(def PartialUser
+  "Schema for a partial user."
+  {:key s/Str
+   :contact_email Email
+   :user s/Str
+   :id s/Str
+   :_type s/Str})
+
+;; & more
+(def Merchant
+  "Schema for a merchant."
+   {:key s/Str
+   :contact_email Email
+   :user s/Str
+   :id s/Str
+   :_type s/Str})
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Misc
 
@@ -142,6 +161,25 @@
 
 (defn gen-credit-ref-url [cid ref & [mode]]
   (str (gen-credits-url cid mode) "?ref=" ref))
+
+
+;; Experimental
+
+(defn gen-auth-url [key & [mode]]
+  (str (gen-base-url mode) "/auth" "?secret=" key))
+
+(defn gen-merchants-url [& [mode]]
+  (str (gen-base-url mode) "/merchants"))
+
+(defn gen-merchant-url [id & [mode]]
+  (str (gen-merchants-url mode) "/" id))
+
+(defn gen-merchant-statement-url [id & [mode]]
+  (str (gen-base-url mode) "/ui/merchant-statements" "?user=" id))
+
+(defn gen-merchant-statement-csv-url [id & [mode]]
+  (str (gen-merchants-url mode) "/" id "/statement"))
+
 
 
 ;; TODO
@@ -278,6 +316,40 @@
   "Takes a customer id and a reference, returns a credit map."
   [cid :- s/Str ref :- s/Str & [mode :- s/Keyword]]
   (get-resource (gen-credit-ref-url cid ref mode)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;; Experimental
+;; NOTE: Subject to change
+
+(sm/defn auth :- PartialUser
+  "Takes an API key and returns a partial user."
+  [key :- s/Str & [mode :- s/Keyword]]
+  (get-resource (gen-auth-url key mode)))
+
+(sm/defn get-merchant :- Merchant
+  "Takes a merchant user and returns a merchant."
+  [user :- s/Str & [mode :- s/Keyword]]
+  (get-resource (gen-merchant-url user mode)))
+
+(sm/defn put-merchant :- Merchant
+  "Takes a merchant id and returns an updated merchant."
+  [id :- s/Str merchant :- Merchant & [mode :- s/Keyword]]
+  (put-resource (gen-merchant-url id mode)
+               (dissoc merchant :id :user :_type :email :phone :key)))
+
+;; XXX: get-put hack
+(sm/defn get-merchant-statement
+  [id :- s/Str & [mode :- s/Keyword]]
+  (put-resource (gen-merchant-statement-url id mode)
+                {}))
+
+;; XXX
+(sm/defn get-merchant-statement-csv
+  [id :- s/Str & [mode :- s/Keyword]]
+  (get-resource (gen-merchant-statement-csv-url id mode)
+                {}))
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; UI routes
