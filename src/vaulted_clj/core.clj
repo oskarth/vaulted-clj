@@ -346,8 +346,7 @@
 ;; XXX
 (sm/defn get-merchant-statement-csv
   [id :- s/Str & [mode :- s/Keyword]]
-  (get-resource (gen-merchant-statement-csv-url id mode)
-                {}))
+  (get-resource (gen-merchant-statement-csv-url id mode)))
 
 
 
