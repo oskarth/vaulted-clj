@@ -1,4 +1,4 @@
-(defproject vaulted/vaulted-clj "0.1.7-SNAPSHOT"
+(defproject vaulted/vaulted-clj "0.1.8-SNAPSHOT"
   :description "Clojure bindings for Vaulted API."
   :url "http://www.vaulted.com"
   :license {:name "Eclipse Public License"
